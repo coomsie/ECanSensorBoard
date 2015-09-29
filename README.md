@@ -1,5 +1,5 @@
-# Particle-Photon---Example-Measuring-Temperature
-Particle Photon - Example Measuring Temperature - for grove starter kit for photon by particle
+# Particle-Photon---Example-Measuring Temperature/Particles/Humidity/
+Particle Photon - Example Measuring Temperature/Particles/Humidity/
 
-taken from https://github.com/Seeed-Studio/Grove_Starter_Kit_for_Photon_Demos
+taken from https://github.com/Seeed-Studio/
 
