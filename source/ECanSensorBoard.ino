@@ -9,7 +9,10 @@
 #include "function_pulseIn.h"
 /*#include "thethingsiOClient.h"*/
 
-#include "rgb_lcd.h"
+//#include "rgb_lcd.h"
+
+//doesnt work correctly
+//#include "High_Temp.h"
 
 #include "SeeedOLED.h"
 
@@ -47,7 +50,7 @@ http_request_t request;
 http_response_t response;
 
 /// LCD Stuff
-rgb_lcd lcd;
+//rgb_lcd lcd;
 
 const int colorR = 255;
 const int colorG = 0;
@@ -128,6 +131,10 @@ static unsigned char SeeedLogo[]={
 
 void dispNum(unsigned int num);
 
+//HIGH TEMP Sensor
+//HighTemp ht(D0, D1);
+
+
 // name the pins
 #define CLK D4
 #define DIO D5
@@ -186,6 +193,9 @@ String humidityDisplay = "...";
 String tempDHTC = "0";
 String tempDHTCDisplay ="...";
 
+String tempthermo = "0";
+String tempthermoDisplay = "...";
+
 bool debugMode = true;
 
 
@@ -209,7 +219,10 @@ DHT dht(DHTPIN, DHTTYPE);
 // This routine runs only once upon reset
 void setup()
 {
-  //lcd stufff
+
+  Serial.begin(9600);
+
+  /*//lcd stufff
   // set up the LCD's number of columns and rows:
    lcd.begin(16, 2);
 
@@ -218,12 +231,16 @@ void setup()
    // Print a message to the LCD.
    lcd.print("hello, world!");
 
-//end of lcd
+//end of lcd*/
 
+//high temp thermocouple
+//Serial.println("grove - hight temperature sensor test demo");
+//ht.begin();
+//end high temp thermocouple
 
 // humudity / Temp
 
-Serial.begin(9600);
+
 Serial.println("DHTxx test!");
 
 dht.begin();
@@ -396,6 +413,10 @@ if ((millis()-starttime) > sampletime_ms)//if the sampel time == 30s
   //end humidity
 
 
+//get thermocouple temp
+//tempthermo = (String) ht.getThmc();
+//end thermocouple
+
 
 
   //// if connected to cloud then
@@ -472,8 +493,14 @@ request.hostname = "api.xively.com";
 request.port = 80;
 request.path = "/v2/feeds/1211611330.json";
 
-String sensorStr = "{\"version\":\"1.0.0\",\"datastreams\" : [ {\"id\" : \"temp\",\"current_value\" : " + tempC + "},{ \"id\" : \"pm10\",\"current_value\" : " + _pm10 + "},{ \"id\" : \"pm25\",\"current_value\" : " + _pm25 + "},{ \"id\" : \"humidity\",\"current_value\" : " + humidity + "},{ \"id\" : \"tempHigh\",\"current_value\" : " + tempDHTC +"}]}";
-
+String sensorStr = "{\"version\":\"1.0.0\",\"datastreams\" : [ ";
+sensorStr = sensorStr + "{\"id\" : \"temp\",\"current_value\" : " + tempC + "}";
+sensorStr = sensorStr + ",{ \"id\" : \"pm10\",\"current_value\" : " + _pm10 + "}";
+sensorStr = sensorStr + ",{ \"id\" : \"pm25\",\"current_value\" : " + _pm25 + "}";
+sensorStr = sensorStr + ",{ \"id\" : \"humidity\",\"current_value\" : " + humidity + "}";
+sensorStr = sensorStr + ",{ \"id\" : \"tempHigh\",\"current_value\" : " + tempDHTC + "}";
+//sensorStr = sensorStr + ",{ \"id\" : \"tempThermocouple\",\"current_value\" : " + tempthermo + " }";
+sensorStr = sensorStr + "]}"; //end of array
 request.body = sensorStr;
 http.put(request,response,headers);
 
